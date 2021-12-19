@@ -3,6 +3,7 @@ import mediapipe as mp
 import math
 import ctypes
 import time
+from fbchat     import Client
 from playsound  import playsound
 from webbrowser import open_new_tab
 from win32api   import keybd_event
@@ -19,7 +20,10 @@ hands    = mpHands.Hands(static_image_mode        = False,
 					 	 max_num_hands            =     1,
 						 min_detection_confidence =   0.70,
 						 min_tracking_confidence  =   0.70)
-
+username = "****"
+passw    = "****"
+vName    = "****"
+client   = Client(username, passw)
 
 def exitApp(msg):
     vs.release()
@@ -41,6 +45,13 @@ if __name__ == '__main__':
 				for handLms in results.multi_hand_landmarks:
 					lmCor = [lm for lm in handLms.landmark]
 
+					'''if checkIntersect(lmCor[6], lmCor[8]) and checkIntersect(lmCor[14], lmCor[16]) and checkIntersect(lmCor[18], lmCor[20]):
+						cv.imwrite("tmp.jpg", frame)
+
+						friendID = client.searchForUsers(vName, limit=1)[0].uid
+						client.sendLocalImage("tmp.png", message="Eik nx", thread_id=friendID)
+						print("yeet")'''
+
 					if time.time() - debTime < debDelay:
 						if checkIntersect(lmCor[4], lmCor[8]):
 							debTime = 0
@@ -58,16 +69,13 @@ if __name__ == '__main__':
 							debTime = 0
 							open_new_tab("https://www.youtube.com/watch?v=Mvvsa5HAJiI&list=RDMM&start_radio=1")
 
-						'''if checkIntersect(lmCor[4], lmCor[17]):
+						if checkIntersect(lmCor[4], lmCor[17]):
 							ctypes.windll.user32.LockWorkStation()
-							debTime = 0'''
+							debTime = 0
 					elif checkIntersect(lmCor[4], lmCor[5]):
 						playsound("bep.wav")
 						debTime = time.time();
-
-
 					#mpDraw.draw_landmarks(frame, handLms, mpHands.HAND_CONNECTIONS)
-
 			#cv.imshow("Image", frame)
 			cv.waitKey(1)
 
